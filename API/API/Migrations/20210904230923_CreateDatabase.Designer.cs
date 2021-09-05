@@ -10,8 +10,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace API.Migrations
 {
     [DbContext(typeof(StarWarsContext))]
-    [Migration("20210904023703_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20210904230923_CreateDatabase")]
+    partial class CreateDatabase
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -146,6 +146,31 @@ namespace API.Migrations
                         .HasDatabaseName("ix_transactions_creditcardid");
 
                     b.ToTable("transactions", "store");
+                });
+
+            modelBuilder.Entity("API.Models.User", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<string>("Password")
+                        .HasColumnType("text")
+                        .HasColumnName("password");
+
+                    b.Property<int>("Role")
+                        .HasColumnType("integer")
+                        .HasColumnName("role");
+
+                    b.Property<string>("Username")
+                        .HasColumnType("text")
+                        .HasColumnName("username");
+
+                    b.HasKey("Id")
+                        .HasName("pk_users");
+
+                    b.ToTable("users", "store");
                 });
 
             modelBuilder.Entity("API.Models.Transaction", b =>

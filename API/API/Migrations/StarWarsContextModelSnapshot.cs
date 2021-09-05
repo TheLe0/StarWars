@@ -146,6 +146,31 @@ namespace API.Migrations
                     b.ToTable("transactions", "store");
                 });
 
+            modelBuilder.Entity("API.Models.User", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<string>("Password")
+                        .HasColumnType("text")
+                        .HasColumnName("password");
+
+                    b.Property<int>("Role")
+                        .HasColumnType("integer")
+                        .HasColumnName("role");
+
+                    b.Property<string>("Username")
+                        .HasColumnType("text")
+                        .HasColumnName("username");
+
+                    b.HasKey("Id")
+                        .HasName("pk_users");
+
+                    b.ToTable("users", "store");
+                });
+
             modelBuilder.Entity("API.Models.Transaction", b =>
                 {
                     b.HasOne("API.Models.CreditCard", "CreditCard")

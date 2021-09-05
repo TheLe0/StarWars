@@ -10,6 +10,7 @@ namespace API.Context
         public DbSet<Product> Product { get; set; }
         public DbSet<Purchase> Purchase { get; set; }
         public DbSet<Models.Transaction> Transaction { get; set; }
+        public DbSet<User> User { get; set; }
 
         public static TransactionScope RepeatableReadScope()
         {

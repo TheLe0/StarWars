@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace API.Migrations
 {
-    public partial class InitialMigration : Migration
+    public partial class CreateDatabase : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -61,6 +61,21 @@ namespace API.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "users",
+                schema: "store",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "uuid", nullable: false),
+                    username = table.Column<string>(type: "text", nullable: true),
+                    password = table.Column<string>(type: "text", nullable: true),
+                    role = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_users", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "transactions",
                 schema: "store",
                 columns: table => new
@@ -102,6 +117,10 @@ namespace API.Migrations
 
             migrationBuilder.DropTable(
                 name: "transactions",
+                schema: "store");
+
+            migrationBuilder.DropTable(
+                name: "users",
                 schema: "store");
 
             migrationBuilder.DropTable(
