@@ -31,6 +31,8 @@ namespace API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var _envVars = new DotEnvUtil().EnvVars;
+
             services.AddCors();
             services.AddControllers();
             services.AddSwaggerGen(c =>
@@ -67,7 +69,7 @@ namespace API
                 });
             });
 
-            var key = Encoding.ASCII.GetBytes(new DotEnvUtil().EnvVars["SECRET"]);
+            var key = Encoding.ASCII.GetBytes(_envVars["SECRET"]);
             services.AddAuthentication(x =>
             {
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -84,6 +86,11 @@ namespace API
                     ValidateIssuer = false,
                     ValidateAudience = false
                 };
+            });
+
+            services.AddStackExchangeRedisCache(options =>
+            {
+                options.Configuration = string.Format("{0}:{1}", _envVars["REDIS_HOST"], _envVars["REDIS_PORT"]);
             });
         }
 
