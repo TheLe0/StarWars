@@ -23,7 +23,7 @@ namespace API.Controllers
 
         [HttpPost]
         [Route("starstore/user/create")]
-        [Authorize]
+        [Authorize(Roles = "SYSADMIN,MODERATOR")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult CreateUser([FromBody] User user)
         {
