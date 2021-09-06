@@ -25,7 +25,7 @@ namespace API.Controllers
         [Route("starstore/user/create")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult Post([FromBody] User user)
+        public IActionResult CreateUser([FromBody] User user)
         {
             string _token = string.Empty;
             try
