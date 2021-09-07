@@ -1,3 +1,4 @@
+using API.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Test
@@ -25,5 +26,6 @@ namespace Test
 
             Assert.AreEqual(true, validatePassword);
         }
+
     }
 }

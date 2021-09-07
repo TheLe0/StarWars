@@ -21,9 +21,9 @@ namespace API.Models
         [JsonPropertyName("client_name")]
         public string ClientName { get; set; }
 
-        [Column("total_to_pay")]
+        [Column("total_amount")]
         [JsonPropertyName("total_to_pay")]
-        public string AmountTotal { get; set; }
+        public Double AmountTotal { get; set; }
 
         [Column("credit_card")]
         [JsonPropertyName("credit_card")]
