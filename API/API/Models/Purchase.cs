@@ -19,11 +19,11 @@ namespace API.Models
 
         [Column("value")]
         [JsonPropertyName("value")]
-        public string Amount { get; set; }
+        public Double Amount { get; set; }
 
         [Column("client_id")]
         [JsonPropertyName("client_id")]
-        public string ClientId { get; set; }
+        public Guid ClientId { get; set; }
 
         [Column("card_number")]
         [JsonPropertyName("card_number")]

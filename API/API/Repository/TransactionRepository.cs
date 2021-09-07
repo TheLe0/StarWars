@@ -12,14 +12,12 @@ namespace API.Repository
     public class TransactionRepository
     {
         private readonly StarWarsContext context;
-        private readonly IDistributedCache _cache;
-        private readonly string _cacheKey;
+        private readonly PurchaseRepository purchase;
 
         public TransactionRepository(IDistributedCache cache)
         {
             context = new();
-            _cacheKey = new DotEnvUtil().EnvVars["CACHE_TRANS_KEY"];
-            _cache = cache;
+            purchase = new(cache);
         }
 
         public async Task<Transaction> Create(Transaction transaction)
@@ -27,6 +25,8 @@ namespace API.Repository
             context.Transaction.Add(transaction);
 
             await context.SaveChangesAsync();
+
+            await purchase.CreateFromTransaction(transaction);
 
             return transaction;
         }
