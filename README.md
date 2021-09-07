@@ -1,39 +1,98 @@
-# StarWars
-An API for a Star Wars store
+# StarWars Store
+[![.NET](https://github.com/TheLe0/StarWars/actions/workflows/dotnet.yml/badge.svg)](https://github.com/TheLe0/StarWars/actions/workflows/dotnet.yml)
 
-![StoneSDK](https://cloud.githubusercontent.com/assets/2567823/11539067/6300c838-990c-11e5-9831-4f8ce691859e.png)
+## INTRODUCTION
+A REST API of an Star Wars Store. 
+In this API you can do the following actions:
 
-# Desafio Backend
+* Create a user;
+* Authenticate a user;
+* Insert a product;
+* List all products;
+* Create a transaction;
+* List all purchases;
+* List all purchases of a specific user;
 
-O desafio consiste em criar uma API REST para a loja de Star Wars que será consumida por um aplicativo (Android e iOS).
-Todos os itens serão colocados em um carrinho do lado do aplicativo e passados para a API para realizar uma transação e-commerce.
+## SPECIFICATIONS
+This project was built using:
 
-O candidato deve dar **fork** neste repositório e após o termino do desenvolvimento, realizar um **pull request** para análise do time.
+* .NET 5
+* Docker
+* PostgreSQL
+* Redis
+* Entity Framework Core
+* JWT
+* .ENV
+* Bcrypt
+* MS Test
 
-O candidato tem a liberdade de realizar o desafio com a tecnologia que achar melhor.
-Deverá informar quais tecnologias foram usadas, como instalar, rodar e efetuar os acessos no arquivo [`details.txt`](https://github.com/stone-pagamentos/desafio-backend/blob/master/details.txt) (se necessário) para análise do desafio.
+## Routes
 
-### Extra
-- Utilizar Cache
-- Autenticação nas requisições
-- Utilizar Docker
+### POST `starstore/user/create`
 
-### POST `/starstore/product`
-Esse método deve receber um produto novo e inseri-lo em um banco de dados para ser consumido pela própria API.
+This endpoint is for creating a new user. 
+
+> Note:
+> This action can only be done by a user with the Sysadmin 
+> or the Moderator roles.
+
 ```json
 {
-   "title":"Blusa do Imperio",
-   "price":7990,
-   "zipcode":"78993-000",
-   "seller":"João da Silva",
-   "thumbnailHd":"https://cdn.awsli.com.br/600x450/21/21351/produto/3853007/f66e8c63ab.jpg",
-   "date":"26/11/2015"
+   "username": "admin",
+   "password": "admin"
 }
 ```
-| Campo       | Tipo   |
+
+The response for this request is going to be the JWT token of the created user.
+
+```json
+{
+   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+}
+```
+
+### POST `starstore/user/auth`
+
+This endpoint is for authenticate an user 
+
+> Note:
+> This is the only endpoint that the user don't need
+> to be authenticated to execute.
+
+```json
+{
+   "username": "admin",
+   "password": "admin"
+}
+```
+
+The response for this request is going to be the JWT token of the authenticated user.
+
+```json
+{
+   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+}
+```
+
+### POST `/starstore/product`
+
+This endpoint is for creating a new product, with the following structure.
+
+```json
+{
+   "title":"Star Wars The Complete Saga - PC",
+   "price": 35.99,
+   "zipcode":"78993-000",
+   "seller": "STEAM",
+   "thumbnailHd":"https://cdn.akamai.steamstatic.com/steam/apps/32440/header.jpg?t=1604517910g",
+   "date":"12/11/2009"
+}
+
+```
+| Field       | Type   |
 |-------------|--------|
 | title       | String |
-| price       | int    |
+| price       | Double |
 | zipcode     | String |
 | seller      | String |
 | thumbnailHd | String |
@@ -41,27 +100,31 @@ Esse método deve receber um produto novo e inseri-lo em um banco de dados para 
 
 
 ### GET `/starstore/products`
-Esse método da API deve retornar o seguinte JSON
+
+This is going to return all the products registered. This request
+uses cache, for reduce the query time. The cache is always update when
+a new product is inserted.
+
 ```json
 [
   {
-    "title": "Blusa do Imperio",
-    "price": 7990,
-    "zipcode": "78993-000",
-    "seller": "João da Silva",
-    "thumbnailHd": "https://cdn.awsli.com.br/600x450/21/21351/produto/3853007/f66e8c63ab.jpg",
-    "date": "26/11/2015"
+      "title":"Star Wars The Complete Saga - PC",
+      "price": 35.99,
+      "zipcode":"78993-000",
+      "seller": "STEAM",
+      "thumbnailHd":"https://cdn.akamai.steamstatic.com/steam/apps/32440/header.jpg?t=1604517910g",
+      "date":"12/11/2009"
   },
   {
-    "title": "Blusa Han Shot First",
-    "price": 7990,
+    "title": "Funko Pop Star Wars Episode 9 Rise of Skywalker 308 Kylo Ren",
+    "price": 151.98,
     "zipcode": "13500-110",
-    "seller": "Joana",
-    "thumbnailHd": "https://cdn.awsli.com.br/1000x1000/21/21351/produto/7234148/55692a941d.jpg",
+    "seller": "GameGames",
+    "thumbnailHd": "https://m.media-amazon.com/images/I/71xdjltlMrL._AC_SL1300_.jpg",
     "date": "26/11/2015"
   },
   {
-    "title": "Sabre de luz",
+    "title": "Lightsaber",
     "price": 150000,
     "zipcode": "13537-000",
     "seller": "Mario Mota",
@@ -71,21 +134,21 @@ Esse método da API deve retornar o seguinte JSON
 ]
 ```
 
-| Campo       | Tipo   |
+| Field       | Type   |
 |-------------|--------|
 | title       | String |
-| price       | int    |
+| price       | Double |
 | zipcode     | String |
 | seller      | String |
 | thumbnailHd | String |
 | date        | String |
 
 
-Após o usuário adicionar todos os itens desejados no carrinho, ele finalizará a compra.
-Para isso, você precisará fazer o método `buy` na sua API.
-
 ### POST `/starstore/buy`
-Esse método irá receber os dados da compra, junto com os dados do usuário.
+
+This method receive the shopping cart of an user, with the total amount and
+his credit card information
+
 ```json
 {
    "client_id":"7e655c6e-e8e5-4349-8348-e51e0ff3072e",
@@ -93,8 +156,7 @@ Esse método irá receber os dados da compra, junto com os dados do usuário.
    "total_to_pay":1236,
    "credit_card":{
       "card_number":"1234123412341234",
-      "value":7990,
-      "cvv":789,
+      "cvv":"789",
       "card_holder_name":"Luke Skywalker",
       "exp_date":"12/24"
    }
@@ -104,26 +166,43 @@ Esse método irá receber os dados da compra, junto com os dados do usuário.
 
 + Transaction
 
-| Campo        | Tipo       |
+| Field        | Type       |
 |--------------|------------|
-| client_id    | String     |
-| client_name  | String     |
-| total_to_pay | int        |
+| client_id    | Guid       |
+| client_name  | Guid       |
+| total_to_pay | Double     |
 | credit_card  | CreditCard |
 
 + CreditCard
 
-| Campo            | Tipo   |
+| Field            | Type   |
 |------------------|--------|
 | card_number      | String |
 | card_holder_name | String |
-| value            | int    |
-| cvv              | int    |
+| cvv              | String |
 | exp_date         | String |
 
+And the response is going to be:
+
+```json
+[
+   {
+      "client_id":"7e655c6e-e8e5-4349-8348-e51e0ff3072e",
+      "purchase_id":"569c30dc-6bdb-407a-b18b-3794f9b206a8",
+      "value":1234,
+      "date":"19/08/2016",
+      "card_number":"**** **** **** 1234"
+   }
+]
+```
+
+Every transaction successfully created, generates a purchase
 
 ### GET `/starstore/history`
-Esse método deve retornar todos as compras realizadas na API
+
+This endpoint lists all the purchases made. Like the products one,
+this uses cache for speed up the requests.
+
 ```json
 [
    {
@@ -152,13 +231,15 @@ Esse método deve retornar todos as compras realizadas na API
 | Campo            | Tipo   |
 |------------------|--------|
 | card_number      | String |
-| cliend_id        | String |
-| value            | int    |
+| cliend_id        | Guid   |
+| value            | Double |
 | date             | String |
-| purchase_id      | String |
+| purchase_id      | Guid   |
 
 ### GET `/starstore/history/{clientId}`
-Esse método deve retornar todos as compras realizadas na API por um cliente específico
+
+This is like the last one request, but with the possibility to filter by client
+
 ```json
 [
    {
