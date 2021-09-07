@@ -258,3 +258,63 @@ This is like the last one request, but with the possibility to filter by client
    }
 ]
 ```
+
+## Installation
+
+The steps for build this solution are:
+
+1) Up a docker container for the database. You must be in the root of this project (where the ``` docker-compose.yml ``` file is). And
+run this command:
+
+```bash
+docker-compose up -d
+```
+
+2) Migrate the database for creating the physical tables:
+
+On Package Manager:
+```shell
+Update-Database
+```
+
+On DotNet CLI:
+```shell
+dotnet ef database update
+```
+
+3) On the ``` ./StarWars/API/API/ ``` directory, you must create a ``` .env ``` file with some enviroment variables. 
+
+Something like this:
+```bash
+DB_HOST=127.0.0.1
+PORT_HOST=5432
+DB_NAME=starWarsDB
+DB_USER=postgres
+DB_PASSWORD=postgres
+DB_SCHEMA=store
+SECRET=fedaf7d8863b48e197b9287d492b708e
+REDIS_HOST=localhost
+REDIS_PORT=6379
+CACHE_PROD_KEY=PRODS
+CACHE_PURCH_KEY=PURCH
+```
+
+Where:
+
+* DB_HOST = The host of the postgres
+* PORT_HOST = The port of the postgres
+* DB_NAME = Postgres database name
+* DB_USER = the username account to connect to postgres
+* DB_PASSWORD = The password of the DB_USER
+* DB_SCHEMA = The postgres schema of the database
+* SECRET = The secret to generate the JWT tokens
+* REDIS_HOST = The host of the redis
+* REDIS_PORT = The port of the redis
+* CACHE_PROD_KEY = The key for the list all products
+* CACHE_PURCH_KEY = The key for the list all purchases
+
+4) Start the IIS server:
+```bash
+dotnet run
+```
+ 🚀🚀🚀
