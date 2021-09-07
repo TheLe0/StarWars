@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Threading.Tasks;
 
 namespace API.Controllers
 {
@@ -25,12 +26,12 @@ namespace API.Controllers
         [Route("starstore/user/create")]
         [Authorize(Roles = "SYSADMIN,MODERATOR")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult CreateUser([FromBody] User user)
+        public async Task<IActionResult> CreateUser([FromBody] User user)
         {
             string _token = string.Empty;
             try
             {
-                _token = repository.Create(user.Username, user.Password);
+                _token = await  repository.Create(user.Username, user.Password);
             }
             catch (Exception exc)
             {
@@ -44,12 +45,12 @@ namespace API.Controllers
         [Route("starstore/user/auth")]
         [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult Authenticate([FromBody] User user)
+        public async Task<IActionResult> Authenticate([FromBody] User user)
         {
             string _token = string.Empty;
             try
             {
-                _token = repository.Login(user.Username, user.Password);
+                _token = await repository.Login(user.Username, user.Password);
             }
             catch (Exception exc)
             {

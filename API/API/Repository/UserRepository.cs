@@ -1,6 +1,8 @@
 ﻿using API.Context;
 using API.Models;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace API.Repository
 {
@@ -13,7 +15,7 @@ namespace API.Repository
             context = new();
         }
 
-        public string Create(string username, string password)
+        public async Task<string> Create(string username, string password)
         {
 
             User user = new();
@@ -24,18 +26,18 @@ namespace API.Repository
 
             context.User.Add(user);
 
-            var affectedRows = context.SaveChanges();
+            var affectedRows = await context.SaveChangesAsync();
 
             return (affectedRows > 0) ? user.GenerateToken() : string.Empty;
         }
 
-        public string Login(string username, string password)
+        public async Task<string> Login(string username, string password)
         {
             if (username.Length > 0 && password.Length > 0)
             {
-                var user = context.User
+                var user = await context.User
                     .Where(s => s.Username == username)
-                    .FirstOrDefault();
+                    .FirstOrDefaultAsync();
 
                 var validatePassword = BCrypt.Net.BCrypt.EnhancedVerify(
                     password,

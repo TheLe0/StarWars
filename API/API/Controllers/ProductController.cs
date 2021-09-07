@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Threading.Tasks;
 
 namespace API.Controllers
 {
@@ -25,11 +26,11 @@ namespace API.Controllers
         [Route("starstore/product")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult CreateProduct([FromBody] Product product)
+        public async Task<IActionResult> CreateProduct([FromBody] Product product)
         {
             try
             {
-               var  _createdProduct = repository.Create(product);
+               var  _createdProduct = await repository.Create(product);
 
                 return Ok(_createdProduct);
             }
@@ -45,11 +46,11 @@ namespace API.Controllers
         [Route("starstore/product")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult GetAllProducts()
+        public async Task<IActionResult> GetAllProducts()
         {
             try
             {
-                return Ok(repository.ListAll());
+                return Ok(await repository.ListAll());
             }
             catch (Exception exc)
             {

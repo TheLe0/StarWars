@@ -1,10 +1,11 @@
 ﻿using API.Context;
 using API.Models;
 using API.Utils;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace API.Repository
 {
@@ -21,38 +22,38 @@ namespace API.Repository
             _cache = cache;
         }
 
-        public Product Create(Product product)
+        public async Task<Product> Create(Product product)
         {
             context.Product.Add(product);
 
-            var affectedRows = context.SaveChanges();
+            var affectedRows = await context.SaveChangesAsync();
 
             if (affectedRows > 0)
             {
-                var products = context.Product.ToList();
+                var products = await context.Product.ToListAsync();
                 var json = JsonSerializer.Serialize(products);
-                _cache.SetString(_cacheKey, json);
+                await _cache.SetStringAsync(_cacheKey, json);
             }
 
             return product;
         }
 
-        public List<Product> ListAll()
+        public async Task<List<Product>> ListAll()
         {
-            var products = new List<Product>();
+            _ = new List<Product>();
 
-            var json = _cache.GetString(_cacheKey);
-
+            var json = await _cache.GetStringAsync(_cacheKey);
+            List<Product> products;
             if (json != null)
             {
                 products = JsonSerializer.Deserialize<List<Product>>(json);
             }
             else
             {
-                products = context.Product.ToList();
+                products = await context.Product.ToListAsync();
 
                 json = JsonSerializer.Serialize(products);
-                _cache.SetString(_cacheKey, json);
+                await _cache.SetStringAsync(_cacheKey, json);
             }
 
             return products;
